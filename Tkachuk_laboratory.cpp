@@ -3,18 +3,10 @@
 #include <string>
 
 using namespace std;
-
-// ============================================================
-//  Утилиты ввода
-// ============================================================
 void skipLine() {
     cin.clear();
     cin.ignore(100000, '\n');
 }
-
-// ============================================================
-//  Труба
-// ============================================================
 struct Pipe {
     string Name = "";
     double length = 0;
@@ -40,7 +32,6 @@ void inputPipe(Pipe& pipe) {
 
     pipe.isRepair = false;
 }
-
 void displayPipe(const Pipe& pipe) {
     cout << "--- Труба ---\n";
     cout << "Название: " << pipe.Name << "\n";
@@ -48,25 +39,18 @@ void displayPipe(const Pipe& pipe) {
     cout << "Диаметр:  " << pipe.diametr << " мм\n";
     cout << "Статус:   " << (pipe.isRepair ? "в ремонте" : "в работе") << "\n";
 }
-
 void setPipeRepair(Pipe& pipe) {
     pipe.isRepair = true;
     cout << "Труба переведена в ремонт.\n";
 }
-
 void setPipeWorking(Pipe& pipe) {
     pipe.isRepair = false;
     cout << "Труба введена в работу.\n";
 }
-
 void togglePipeRepair(Pipe& pipe) {
     pipe.isRepair = !pipe.isRepair;
     cout << "Новый статус: " << (pipe.isRepair ? "в ремонте" : "в работе") << "\n";
 }
-
-// ============================================================
-//  Компрессорная станция
-// ============================================================
 struct KC {
     string Name = "";
     int amountFactories = 0;
@@ -120,20 +104,12 @@ bool stopShop(KC& kc) {
     --kc.workingFactories;
     return true;
 }
-
-// ============================================================
-//  Общее состояние приложения
-// ============================================================
 struct AppState {
     Pipe pipe;
     KC   kc;
     bool pipeExists = false;
     bool kcExists   = false;
 };
-
-// ============================================================
-//  Сохранение — отдельно на каждую сущность
-// ============================================================
 void savePipe(ofstream& out, const Pipe& pipe) {
     out << "PIPE\n"
         << pipe.Name << '\n'
@@ -168,14 +144,6 @@ bool saveAll(const AppState& state, const string& filename) {
     cout << "Данные сохранены в " << filename << "\n";
     return true;
 }
-
-// ============================================================
-//  Загрузка — отдельно на каждую сущность
-// ============================================================
-// Читает один тег из файла. Возвращает:
-//   1 — тег совпал, данные прочитаны;
-//   0 — тег не совпал (пропускаем);
-//  -1 — данные битые.
 int loadPipe(ifstream& in, Pipe& pipe) {
     string tag;
     if (!(in >> tag)) return 0;
@@ -234,8 +202,6 @@ bool loadAll(AppState& state, const string& filename) {
     cout << "[debug] loading from: " << filename << "\n";
     bool pipeLoaded = false;
     bool kcLoaded   = false;
-
-    // Файл может содержать PIPE и KC в любом порядке — читаем до конца.
     string tag;
     while (in >> tag) {
         if (tag == "PIPE") {
@@ -273,10 +239,6 @@ bool loadAll(AppState& state, const string& filename) {
     cout << ".\n";
     return true;
 }
-
-// ============================================================
-//  Меню
-// ============================================================
 void displayMenu() {
     cout << "\n========== Трубопровод ==========\n";
     cout << "1. Ввод трубы\n";
@@ -290,10 +252,6 @@ void displayMenu() {
     cout << "=================================\n";
     cout << "Выберите действие: ";
 }
-
-// ============================================================
-//  Обработчики пунктов меню
-// ============================================================
 void handleAddPipe(AppState& state) {
     if (state.pipeExists) {
         cout << "Труба уже есть. Перезаписать? (y/n): ";
@@ -397,10 +355,6 @@ void handleEditKC(AppState& state) {
         default: cout << "Нет такого пункта.\n"; break;
     }
 }
-
-
-
-
 int main() {
     AppState state;
     const string fileName = "pipeline_data.txt";
